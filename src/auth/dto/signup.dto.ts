@@ -1,6 +1,7 @@
+import { Role } from '../../common/enums/role.enum';
 export class SignupDto {
     email: string;
     password: string;
-    // Add additional fields as required
+    role: Role;
   }
   

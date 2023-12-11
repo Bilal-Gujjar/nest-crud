@@ -4,15 +4,19 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
-    @Public()
+    @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Request() req: LoginDto) {
-        return this.authService.login(req);
+    async login(@Request() loginDto: LoginDto) {
+        console.log(loginDto);
+        
+        return this.authService.login(loginDto);
     }
 
     @Post('signup')
@@ -24,5 +28,5 @@ export class AuthController {
     @Get('profile')
     getProfile(@Request() req) {
         return req.user;
-    }
+    } 
 }

@@ -1,43 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Book } from './schemas/book.schema';
 import { CreateBookDto } from './dto/create-book.dto';
 
 @Injectable()
 export class BooksService {
-  private books: any[] = []; // Replace with actual database model
+  constructor(@InjectModel(Book.name) private bookModel: Model<Book>) {}
 
-  create(createBookDto: CreateBookDto) {
-    const newBook = { id: Date.now().toString(), ...createBookDto };
-    this.books.push(newBook);
-    return newBook;
+  async create(createBookDto: CreateBookDto): Promise<Book> {
+    const newBook = new this.bookModel(createBookDto);
+    return newBook.save();
   }
 
-  findAll() {
-    return this.books;
+  async findAll(): Promise<Book[]> {
+    return this.bookModel.find().exec();
   }
 
-  findOne(id: string) {
-    const book = this.books.find(book => book.id === id);
-    if (!book) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-    return book;
+  async findOne(id: string): Promise<Book> {
+    return this.bookModel.findById(id).exec();
   }
 
-  update(id: string, updateBookDto: CreateBookDto) {
-    const bookIndex = this.books.findIndex(book => book.id === id);
-    if (bookIndex === -1) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-    this.books[bookIndex] = { ...this.books[bookIndex], ...updateBookDto };
-    return this.books[bookIndex];
-  }
-
-  remove(id: string) {
-    const bookIndex = this.books.findIndex(book => book.id === id);
-    if (bookIndex === -1) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-    this.books.splice(bookIndex, 1);
-    return { message: 'Book successfully deleted' };
+  async update(id: string, updateBookDto: CreateBookDto): Promise<Book> {
+    return this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true }).exec();
   }
 }

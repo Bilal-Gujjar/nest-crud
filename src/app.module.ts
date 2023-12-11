@@ -5,6 +5,9 @@ import configService from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { BooksModule } from './books/books.module';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
   imports: [
@@ -14,7 +17,7 @@ import { BooksModule } from './books/books.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('database.uri'),
+        uri: configService.get<string>('MONGODB_URI'),
       }),
       inject: [ConfigService],
     }),
@@ -24,3 +27,5 @@ import { BooksModule } from './books/books.module';
   ],
 })
 export class AppModule {}
+
+console.log(process.env.MONGODB_URI);
