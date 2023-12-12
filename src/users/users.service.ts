@@ -9,7 +9,7 @@ export class UsersService {
   findAll() {
     throw new Error('Method not implemented.');
   }
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const newUser = new this.userModel(createUserDto);
