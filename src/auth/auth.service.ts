@@ -21,15 +21,9 @@ export class AuthService {
     return null;
   }
 
-  async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
-    console.log(email, password);
-  
-    const user = await this.validateUser(email, password);
-    if (!user) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    }
-    const payload = { username: user.username, sub: user.userId , role: user.role};
+  async login(req) {
+    const user = req.user;
+    const payload = { email: user.email, sub: user._id , role: user.role};
     return {
       token: this.jwtService.sign(payload),
       user:user._doc
@@ -53,7 +47,6 @@ export class AuthService {
       roles: role, 
     });
 
-    newUser.save();
 
     const { password: _, ...result } = newUser;
     return result;

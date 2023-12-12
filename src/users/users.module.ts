@@ -8,7 +8,6 @@ import { DatabaseModule } from '../common/config/database.module.config';
 
 @Module({
   imports: [
-    DatabaseModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
   providers: [UsersService],

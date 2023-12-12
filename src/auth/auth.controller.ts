@@ -7,9 +7,12 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
+    @UseGuards(AuthGuard('local'))
     @Post('login')
-    async login(@Body() loginDto: LoginDto) {
-        return this.authService.login(loginDto);
+    async login(@Request() req) {
+        console.log("req.user,req.body==============>",req.user,req.body);
+        
+        return this.authService.login(req);
     }
     
     @Post('signup')

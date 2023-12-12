@@ -1,10 +1,8 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory  } from '@nestjs/mongoose';
 
 @Schema()
 export class User {
-  save() {
-    throw new Error('Method not implemented.');
-  }
+  
   @Prop({ required: true, unique: true })
   username: string;
 
