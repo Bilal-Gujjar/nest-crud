@@ -11,7 +11,7 @@ export class BooksController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin, Role.User) // Adjust based on your requirements
+  @Roles([Role.Admin, Role.User]) // Adjust based on your requirements
   async create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.create(createBookDto);
   }
@@ -28,14 +28,14 @@ export class BooksController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin, Role.User) // Adjust based on your requirements
+  @Roles([Role.Admin, Role.User]) // Adjust based on your requirements
   async update(@Param('id') id: string, @Body() updateBookDto: CreateBookDto) {
     return this.booksService.update(id, updateBookDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin) // Only Admin can delete books
+  @Roles([Role.Admin]) // Only Admin can delete books
   async remove(@Param('id') id: string) {
     return this.booksService.remove(id);
   }
