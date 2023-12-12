@@ -4,6 +4,9 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
+import { RolesGuard } from './guards/roles.guard';
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
@@ -19,8 +22,8 @@ export class AuthController {
     async signup(@Body() signupDto: SignupDto) {
         return this.authService.signup(signupDto);
     }
-
-    @UseGuards(JwtAuthGuard)
+    @Roles([Role.Admin])
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Get('profile')
     getProfile(@Request() req) {
         return req.user;
