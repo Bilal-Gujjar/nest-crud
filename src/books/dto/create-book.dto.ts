@@ -1,4 +1,6 @@
 export class CreateBookDto {
-  title: string;
-  author: string;
+  readonly title: string;
+  readonly price: number;
+  readonly genre: string;
+  readonly description: string;
 }

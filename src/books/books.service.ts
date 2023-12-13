@@ -3,12 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Book } from './interfaces/book.interface';
+import { User } from 'src/common/interfaces/user.interface';
 @Injectable()
 export class BooksService {
   constructor(@InjectModel('Book') private readonly bookModel: Model<Book>) {}
 
-  async create(createBookDto:CreateBookDto): Promise<Book> {
-    const createdBook = new this.bookModel(createBookDto);
+async create(createBookDto: CreateBookDto): Promise<Book> {
+    const createdBook = new this.bookModel({
+      ...createBookDto,
+
+    });
     return await createdBook.save();
   }
 
