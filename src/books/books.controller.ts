@@ -10,20 +10,22 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
-  @Roles([Role.Admin, Role.User]) 
+  @Roles([Role.Admin]) 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   async create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.create(createBookDto);
   }
 
-  @Roles([Role.Admin])
+  @Roles([Role.Admin,Role.User])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll() {
     return this.booksService.findAll();
   }
-
+  
+  @Roles([Role.Admin,Role.User])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.booksService.findOne(id);
