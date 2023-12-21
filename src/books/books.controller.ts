@@ -4,39 +4,44 @@ import { BooksService } from './books.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('books')
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
+  @Roles([Role.Admin]) 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin, Role.User) // Adjust based on your requirements
   async create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.create(createBookDto);
   }
 
+  @Roles([Role.Admin,Role.User])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll() {
     return this.booksService.findAll();
   }
-
+  
+  @Roles([Role.Admin,Role.User])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.booksService.findOne(id);
   }
 
+  @Roles([Role.Admin, Role.User]) 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin, Role.User) // Adjust based on your requirements
   async update(@Param('id') id: string, @Body() updateBookDto: CreateBookDto) {
     return this.booksService.update(id, updateBookDto);
   }
 
+  @Roles([Role.Admin])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin) // Only Admin can delete books
   async remove(@Param('id') id: string) {
-    return this.booksService.remove(id);
+    return this.booksService.delete(id);
   }
 }
