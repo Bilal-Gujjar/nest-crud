@@ -1,5 +1,6 @@
 export class CreateBookDto {
-  title: string;
-  author: string;
-  // Include other properties as needed, like publishDate, genre, etc.
+  readonly title: string;
+  readonly price: number;
+  readonly genre: string;
+  readonly description: string;
 }

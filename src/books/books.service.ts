@@ -1,43 +1,52 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
+import { Book } from './interfaces/book.interface';
+
 
 @Injectable()
 export class BooksService {
-  private books: any[] = []; // Replace with actual database model
+  constructor(@InjectModel('Book') private readonly bookModel: Model<Book>,
+  
+  ) {}
 
-  create(createBookDto: CreateBookDto) {
-    const newBook = { id: Date.now().toString(), ...createBookDto };
-    this.books.push(newBook);
-    return newBook;
+
+  async create(createBookDto: CreateBookDto, user: any): Promise<Book> {
+    console.log("user------------@@@@@@@@@@***********@@@@@@@@@@----------=======>", user.userId);
+  
+    const createdBook = new this.bookModel({
+      ...createBookDto,
+      createdBy: [user.userId], 
+    });
+  
+    return createdBook.save();
   }
 
-  findAll() {
-    return this.books;
+  // async findAll(): Promise<Book[]> {
+  //   return this.bookModel.find().exec()
+  // }
+
+
+  async findOne(id: string): Promise<Book> {
+    return await this.bookModel.findById(id).exec();
   }
 
-  findOne(id: string) {
-    const book = this.books.find(book => book.id === id);
-    if (!book) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
+  async update(id: string, updateBookDto: CreateBookDto): Promise<Book> {
+    return await this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true }).exec();
+  }
+
+  async delete(id: string): Promise<any> {
+    return await this.bookModel.findByIdAndDelete(id).exec();
+  }
+
+  async findAll(user: any): Promise<Book[]> {
+
+    if (user.role == 'superuser') {
+      return this.bookModel.find().exec();
+    } else {
+      return this.bookModel.find({ createdBy: user.userId }).exec();
     }
-    return book;
   }
 
-  update(id: string, updateBookDto: CreateBookDto) {
-    const bookIndex = this.books.findIndex(book => book.id === id);
-    if (bookIndex === -1) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-    this.books[bookIndex] = { ...this.books[bookIndex], ...updateBookDto };
-    return this.books[bookIndex];
-  }
-
-  remove(id: string) {
-    const bookIndex = this.books.findIndex(book => book.id === id);
-    if (bookIndex === -1) {
-      throw new NotFoundException(`Book with ID "${id}" not found`);
-    }
-    this.books.splice(bookIndex, 1);
-    return { message: 'Book successfully deleted' };
-  }
 }

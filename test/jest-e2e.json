@@ -7,3 +7,12 @@
     "^.+\\.(t|j)s$": "ts-jest"
   }
 }
+
+
+I want to create a book management system. Which have AUTH super-admin, admin, and user roles. 
+Super admin has all the access to create, delete, update, and read the books of all admins. 
+I want multiple admins but only one super admin.
+Every admin creates books and operates on them only which one it created.
+Super-admin also creates the book and can assign it to any admin in the future. 
+After that, Users can see all the books and place orders. 
+I want to design the MongoDB schema for this task. Give me the most optimized schema. 
